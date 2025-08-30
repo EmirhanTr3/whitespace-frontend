@@ -3,6 +3,7 @@ import { useRef, useState, FormEvent } from 'react'
 import { Form, FormBackground, FormBox, FormButton, FormField, FormFields, FormHeader } from '@/components'
 import { authClient } from '@/lib/auth-client'
 import { LoginFormSchema } from '@/lib/definitions'
+import { APIValidationError } from '@/lib/api'
 
 export const Route = createFileRoute('/_auth/login')({
   component: LoginRoute,
@@ -13,7 +14,7 @@ export default function LoginRoute() {
     const passwordRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
 
-    const [state, setState] = useState<any>()
+    const [state, setState] = useState<APIValidationError>()
     const [failed, setFailed] = useState<boolean>(false)
 
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -25,7 +26,7 @@ export default function LoginRoute() {
         })
         if (!validatedFields.success) {
             setFailed(false)
-            return setState({ errors: validatedFields.error.message })
+            return setState(new APIValidationError(validatedFields.error))
         } else if (state) {
             setState(undefined)
         }

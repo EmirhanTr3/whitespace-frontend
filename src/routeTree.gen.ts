@@ -9,11 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AppGuildsGuildIdRouteRouteImport } from './routes/app/guilds/$guildId/route'
+import { Route as AppGuildsGuildIdChannelsChannelIdRouteImport } from './routes/app/guilds/$guildId/channels/$channelId'
 
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
@@ -33,39 +41,87 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AppGuildsGuildIdRouteRoute = AppGuildsGuildIdRouteRouteImport.update({
+  id: '/guilds/$guildId',
+  path: '/guilds/$guildId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppGuildsGuildIdChannelsChannelIdRoute =
+  AppGuildsGuildIdChannelsChannelIdRouteImport.update({
+    id: '/channels/$channelId',
+    path: '/channels/$channelId',
+    getParentRoute: () => AppGuildsGuildIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/app/guilds/$guildId': typeof AppGuildsGuildIdRouteRouteWithChildren
+  '/app/guilds/$guildId/channels/$channelId': typeof AppGuildsGuildIdChannelsChannelIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/app/guilds/$guildId': typeof AppGuildsGuildIdRouteRouteWithChildren
+  '/app/guilds/$guildId/channels/$channelId': typeof AppGuildsGuildIdChannelsChannelIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
+  '/app': typeof AppRouteRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
+  '/app/guilds/$guildId': typeof AppGuildsGuildIdRouteRouteWithChildren
+  '/app/guilds/$guildId/channels/$channelId': typeof AppGuildsGuildIdChannelsChannelIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/login'
+    | '/register'
+    | '/app/guilds/$guildId'
+    | '/app/guilds/$guildId/channels/$channelId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register'
-  id: '__root__' | '/' | '/_auth' | '/_auth/login' | '/_auth/register'
+  to:
+    | '/'
+    | '/app'
+    | '/login'
+    | '/register'
+    | '/app/guilds/$guildId'
+    | '/app/guilds/$guildId/channels/$channelId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/app'
+    | '/_auth/login'
+    | '/_auth/register'
+    | '/app/guilds/$guildId'
+    | '/app/guilds/$guildId/channels/$channelId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  AppRouteRoute: typeof AppRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -94,6 +150,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/app/guilds/$guildId': {
+      id: '/app/guilds/$guildId'
+      path: '/guilds/$guildId'
+      fullPath: '/app/guilds/$guildId'
+      preLoaderRoute: typeof AppGuildsGuildIdRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/guilds/$guildId/channels/$channelId': {
+      id: '/app/guilds/$guildId/channels/$channelId'
+      path: '/channels/$channelId'
+      fullPath: '/app/guilds/$guildId/channels/$channelId'
+      preLoaderRoute: typeof AppGuildsGuildIdChannelsChannelIdRouteImport
+      parentRoute: typeof AppGuildsGuildIdRouteRoute
+    }
   }
 }
 
@@ -111,9 +181,36 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface AppGuildsGuildIdRouteRouteChildren {
+  AppGuildsGuildIdChannelsChannelIdRoute: typeof AppGuildsGuildIdChannelsChannelIdRoute
+}
+
+const AppGuildsGuildIdRouteRouteChildren: AppGuildsGuildIdRouteRouteChildren = {
+  AppGuildsGuildIdChannelsChannelIdRoute:
+    AppGuildsGuildIdChannelsChannelIdRoute,
+}
+
+const AppGuildsGuildIdRouteRouteWithChildren =
+  AppGuildsGuildIdRouteRoute._addFileChildren(
+    AppGuildsGuildIdRouteRouteChildren,
+  )
+
+interface AppRouteRouteChildren {
+  AppGuildsGuildIdRouteRoute: typeof AppGuildsGuildIdRouteRouteWithChildren
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppGuildsGuildIdRouteRoute: AppGuildsGuildIdRouteRouteWithChildren,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  AppRouteRoute: AppRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

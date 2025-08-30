@@ -3,6 +3,7 @@ import { useRef, useState, FormEvent } from "react";
 import { FormBackground, FormBox, FormHeader, Form, FormFields, FormField, FormButton } from "@/components";
 import { authClient } from "@/lib/auth-client";
 import { RegisterFormSchema } from "@/lib/definitions";
+import { APIValidationError } from "@/lib/api";
 
 export const Route = createFileRoute('/_auth/register')({
   component: RegisterRoute,
@@ -15,7 +16,7 @@ export default function RegisterRoute() {
     const passwordRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
     
-    const [state, setState] = useState<any>()
+    const [state, setState] = useState<APIValidationError>()
     const [failed, setFailed] = useState<Boolean>(false)
     
     async function onSubmit(event: FormEvent) {
@@ -29,7 +30,7 @@ export default function RegisterRoute() {
         })
         if (!validatedFields.success) {
             setFailed(false)
-            return setState({ errors: validatedFields.error.flatten().fieldErrors })
+            return setState(new APIValidationError(validatedFields.error))
         } else if (state) {
             setState(undefined)
         }
@@ -45,6 +46,7 @@ export default function RegisterRoute() {
         if (!result.error) {
             router.navigate({ to: "/" })
         } else {
+            console.log(result)
             setFailed(true)
         }
     }

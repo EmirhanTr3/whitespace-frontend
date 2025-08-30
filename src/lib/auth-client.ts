@@ -12,7 +12,7 @@ export const authClient = createAuthClient({
             rank: {
                 type: "string",
                 required: true,
-                defaultValue: "USER"
+                defaultValue: "USER",
             },
             badges: {
                 type: "string[]",

@@ -9,6 +9,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html,
+body {
+  @apply h-full w-full overflow-hidden;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+}
+
+p {
+  color: var(--color-neutral-200)
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

@@ -35,18 +35,16 @@ export function FormButton({ text }: { text: string }) {
     return <button type="submit" className="text-stone-200 bg-gray-900 rounded-[4px] h-8 text-sm hover:bg-[#101520] cursor-pointer">{text}</button>
 }
 
-export const FormField = forwardRef<HTMLInputElement, { name: string, type?: string, text: string, required?: boolean, error?: string[] }>((props, ref) => {
+export const FormField = forwardRef<HTMLInputElement, { name: string, type?: string, text: string, required?: boolean, error?: string }>((props, ref) => {
     return <div>
         <label className="text-stone-200 font-semibold text-[11px] pl-[1px]">{props.text} {(props.required ?? true) && <label className="text-red-500">*</label>}</label>
         <input ref={ref} type={props.type ?? "text"} name={props.name} className="rounded-[4px] h-8 outline-none text-sm w-full p-2.5 bg-gray-900 text-stone-200 focus:bg-[#101520]" />
-        {props.error && <FormError errors={props.error}/>}
+        {props.error && <FormError error={props.error}/>}
     </div>
 })
 
-export function FormError({ errors }: { errors: string[] }) {
+export function FormError({ error }: { error: string }) {
     return <ul>
-        {errors.map((error) => (
-            <li key={error} className="text-red-500 list-disc ml-5 text-sm">{error}</li>
-        ))}
+        <li key={error} className="text-red-500 list-disc ml-5 text-sm">{error}</li>
     </ul>
 }
